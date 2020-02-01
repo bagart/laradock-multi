@@ -1,10 +1,3 @@
 #!/bin/bash
 
-. cmd/stop.sh $1 $2 $3 $4
-
-cd ../../laradock
-  docker-compose -f docker-compose.multi.yml stop -f $1 $2 $3 $4
-  docker-compose -f docker-compose.multi.yml down -f $1 $2 $3 $4
-  docker-compose -f docker-compose.multi.yml rm -f $1 $2 $3 $4
-  docker-compose -f docker-compose.multi.yml build --pull $1 $2 $3 $4
-cd ../projects/default
+. "$(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/../../../cmd/$(basename $BASH_SOURCE)" $1 $2 $3 $4 $5

@@ -4,12 +4,13 @@ server {
     listen [::]:80;
 
     # For https
-    # listen 443 ssl;
-    # listen [::]:443 ssl ipv6only=on;
-    # ssl_certificate /etc/nginx/ssl/default.crt;
-    # ssl_certificate_key /etc/nginx/ssl/default.key;
+    listen 443 ssl;
+    #listen [::]:443 ssl ipv6only=on;
+    ssl_certificate /etc/nginx/ssl/default.crt;
+    ssl_certificate_key /etc/nginx/ssl/default.key;
 
-    server_name dashboard.localhost;
+    server_name ~^dashboard\.(multi\.|localhost$);
+
     root /var/www/dashboard/public;
     index index.html;
 

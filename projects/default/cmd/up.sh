@@ -1,9 +1,3 @@
 #!/bin/bash
 
-cd ../../laradock
-  docker-compose -f docker-compose.milti.yml up -d dashboard && \
-  docker-compose -f docker-compose.milti.yml up -d laravel && \
-  docker-compose -f docker-compose.milti.yml up -d nginx;
-cd ../projects/default
-
-. cmd/ps.sh
+. "$(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)/../../../cmd/$(basename $BASH_SOURCE)" $1 $2 $3 $4 $5
