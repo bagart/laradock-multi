@@ -147,7 +147,7 @@ sudo apt install -y docker-compose
 sudo groupadd docker
 sudo usermod -aG docker $USER
 sudo systemctl enable docker
-sudo /etc/init.d/docker start
+sudo service docker start
 ```
 
 - Now you must logout/login from console. Better is reboot OS after apt upgrade
@@ -157,7 +157,7 @@ sudo reboot
 - reconnect with last command `ssh $DOCKER_multi_IP`. repeat if OS not booted
 - check docker status (it's must auto-started): 
 ```bash
-/etc/init.d/docker status
+service docker status
 ```
 #### STEP 3: download `Laradock-Multi`
 
@@ -254,14 +254,54 @@ rm ./laradock/env-example.orig
 
 - (optional) install Laravel or NodeJs service from [https://github.com/bagart/laradock-multi](https://github.com/bagart/laradock-multi) instruction 
 
-#### STEP 5: RUN
+#### STEP 6: Prepare project git and deploy
+
+Create a new GitHub private(?) repositories for each projct,
+Example: **laravel**, **api**, **dashboard**
+
+Generate deploy keys
+```bash
+ssh-keygen -f .keys/laravel
+ssh-keygen -f .keys/dashboard
+ssh-keygen -f .keys/api
+#check prermissions
+ls -la .keys
+echo ssh public deploy key for docker-multi is:
+cat .keys/bagrt-bot-tg.pub
+```
+
+Optional: create deploy keys for protect your private developer keys with write permissions 
+Add deploy keys to each project as READ ONLY
+`cat .keys/laravel`
+- https://github.com/***/laravel/settings
+`cat .keys/api`
+- https://github.com/***/api/settings
+`cat .keys/dashboard`
+- https://github.com/***/dashboard/settings
+
+```bash
+ssh-agent sh -c "\
+    ssh-add .keys/laravel; \
+    git clone git@github.com:***/laravel.git projects/laravel"
+
+ssh-agent sh -c "\
+    ssh-add .keys/api; \
+    git clone git@github.com:***/api.git projects/api"
+
+ssh-agent sh -c "\
+    ssh-add .keys/dashboard; \
+    git clone git@github.com:***/api.git projects/dashboard"
+
+```
+
+#### STEP 6: RUN
 - running default `laradock Multi` env
 ```bash
 cmd/up.sh
 ```
 It's take a time, space, traffic and other resource
 
-#### STEP 6: self check
+#### STEP 7: self check
 - check `Laradock Multi`
 ```bash
 cmd/ps.sh
@@ -337,7 +377,7 @@ Expect:
     <h1>Default project </h1>
 
 
-#### STEP 7: (optional) configure DNS ot /etc/hosts 
+#### STEP 8: (optional) configure DNS ot /etc/hosts 
 - for localhost you can use
 ```bash
 curl http://default.localhost
@@ -377,18 +417,66 @@ Expect:
 curl api.multi.bagrt.com
 ```
 open in browser: [http://api.multi.bagrt.com](http://api.multi.bagrt.com)
+
 Expect:
     
     <h1>Api demo</h1>
 
-#### STEP 8: Add your custom repository
-Follow [https://github.com/bagart/laradock-multi](https://github.com/bagart/laradock-multi) instruction 
+#### STEP 9: composer install
+```bash
+cmd/bash.sh bagrt-bot-tg
+composer install
+```
+
+#### STEP 10: Add your custom repository
+Follow [https://github.com/bagart/laradock-multi](https://github.com/bagart/laradock-multi) instruction
 
 There examples with `Laravel` and `CoreUI`/`Node.js` examples
 
-#### STEP 9: Configure HTTPS  
+#### STEP 11: Configure HTTPS
+Uncomment Nginx SSL options for each service 
+`.laradock-multi/nginx/sites/*.conf`
+```bash
+    #ssl_certificate /etc/nginx/ssl/domain.com.crt;
+    #ssl_certificate_key /etc/nginx/ssl/domain.com.key;
+```
 
-#### STEP 10: push env changes to `docker-multi` repo
+and comment default SSL options
+```bash
+    #custom SELF-SIGNED
+    ssl_certificate /etc/nginx/ssl/default.crt;
+    ssl_certificate_key /etc/nginx/ssl/default.key;
+```
+Commit changes.
+**WARNING! push any changes before deploy.**
+```bash
+git commit -m 'setup env'
+```
+
+Deploy will reset your repo to origin/master (git fetch+git reset)
+
+_Hint*_: For deploy without git update/reset
+
+```bash
+echo LARADOCK_DEV_VERSION=true >> .env
+```
+
+run on cloud server
+```bash
+cmd/deploy.sh
+
+# visual check certbot result
+cmd/logs.sh certbot-multi
+```
+ 
+It's will 
+- replace laradock config from `.laradock-multi/*` to `laravel/*`
+- create a new SSL certificate
+- run services
+
+check your site https://domain.com and http://domain.com
+
+#### STEP 12: push env changes to `docker-multi` repo
 For use `cmd/deploy.sh` script you must save all customization to `.laradock-multi` dir
 
 Or write your deploy tool for upgrade `Laradock Multi` or make it manual. 
@@ -404,4 +492,5 @@ ssh-agent sh -c "ssh-add .keys/$(basename $(pwd)); git push";
 
 #### Important note:
 Please  use `cmd/deploy.sh` script carefully for protect your customization in `laradock` path.
+
 Upgrade option will remove your laradock dir!

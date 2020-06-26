@@ -1,22 +1,21 @@
 server {
-    #Node.JS service example for https://github.com/bagart/laradock-multi
+    # Dashboard: Node.JS service example for https://github.com/bagart/laradock-multi
     listen 80;
     listen [::]:80;
 
     # For https
     listen 443 ssl;
-    #listen [::]:443 ssl ipv6only=on;
-    ssl_certificate /etc/nginx/ssl/default.crt;
-    ssl_certificate_key /etc/nginx/ssl/default.key;
+    listen [::]:443 ssl;
 
-    server_name ~^dashboard\.(multi\.|localhost$);
+    ssl_certificate /etc/nginx/ssl/example.com.crt;
+    ssl_certificate_key /etc/nginx/ssl/example.com.key;
+
+    server_name ~^dashboard(\.example\.com|\.localhost)?$;
 
     root /var/www/dashboard/public;
     index index.html;
 
     location / {
-#         try_files $uri $uri/ /index.html$is_args$args;
-#    }
         proxy_pass                 http://dashboard/;
         proxy_redirect             off;
 
@@ -50,8 +49,11 @@ server {
 
     location /.well-known/acme-challenge/ {
         root /var/www/letsencrypt/;
-        log_not_found off;
+#        log_not_found off;
     }
+
+    error_log /dev/stdout;
+    access_log /dev/stdout;
 
     error_log /var/log/nginx/dashboard_error.log;
     access_log /var/log/nginx/dashboard_access.log;

@@ -8,6 +8,13 @@ Laradock wrapper template for running multiple related projects with different v
 - [Microservice Architecture](https://en.wikipedia.org/wiki/Microservices) as concept
 - [Docker Compose](https://docs.docker.com/compose/) 
 
+## Demo services
+localhost on dev env
+- [default](http://localhost/)
+- [api.localhost](http://api.localhost/)
+- [laravel.localhost](http://laravel.localhost/)
+- [dashboard.localhost](http://dashboard.localhost/) switched off by default
+
 ## Instruction for configure step-by-step
 - [Integrate](Integrate.md) Demo of usage with Cloud env (`Yandex Cloud` for example as simple and useful) 
 
@@ -20,14 +27,15 @@ Laradock wrapper template for running multiple related projects with different v
 - `cmd/rebuild.sh laravel-fpm nginx` rebuild only `laravel-fpm` and `nginx`
 - `cmd/stop.sh` - stop all services
 - `cmd/stop.sh nginx api` - stop services: `nginx` and `api`
+- `cmd/test_tor_proxy.sh` - test TOR proxy
 - `cmd/up.sh` - start all services
 - `cmd/up.sh nginx api` - start services: `nginx` and `api`
 
 ## Setup
 
-### Install Docker-CE with Docker-compose
+### Install Docker-CE with Docker-compose and git
 ```bash
-apt install docker docker-compose
+apt install docker docker-compose git
 ```
 ### Download Laradock-Multi with laradock
 ```bash
