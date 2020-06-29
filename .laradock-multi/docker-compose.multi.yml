@@ -26,13 +26,14 @@ services:
       build:
         context: ./nginx
         args:
-          - CERT_NAMES=${LARADOCK_CERT_NAMES}
           - CHANGE_SOURCE=${CHANGE_SOURCE}
           - PHP_UPSTREAM_CONTAINER=${NGINX_PHP_UPSTREAM_CONTAINER}
           - PHP_UPSTREAM_PORT=${NGINX_PHP_UPSTREAM_PORT}
           - http_proxy
           - https_proxy
           - no_proxy
+      environment:
+        - CERT_NAMES=${LARADOCK_CERT_NAMES}
       volumes:
         # universal multipath
         #- ${APP_CODE_PATH_HOST}:${APP_CODE_PATH_CONTAINER}${APP_CODE_CONTAINER_FLAG}
