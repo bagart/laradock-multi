@@ -31,7 +31,7 @@ fi;
 
 if [[ $1 == 'laradock' ]]; then
   . "$(dirname "${BASH_SOURCE[0]}")/.jump_to_laradock.sh";
-    cp ../.laradock-multi/. ./ -r
+    cp -r ../.laradock-multi/. ./
   cd "${CUR_PATH}";
   exit
 fi
@@ -40,7 +40,7 @@ if [[ $1 == 'reset' ]]; then
     echo Deploy: Laradoc-multi reset laradock
   . "$(dirname "${BASH_SOURCE[0]}")/.jump_to_laradock.sh";
     git reset --hard master
-    cp ../.laradock-multi/. ./ -r
+    cp -r ../.laradock-multi/. ./
     docker-compose -f docker-compose.multi.yml build > /dev/null
   cd "${CUR_PATH}";
   exit;
@@ -51,7 +51,7 @@ if [[ $1 == 'upgrade' || ! -d ./laradock ]]; then
   cd "$(dirname "${BASH_SOURCE[0]}")/..";
   rm -rf ./laradock_new
   git clone https://github.com/Laradock/laradock.git ./laradock_new
-  cp ./.laradock-multi/. ./laradock_new/ -r
+  cp -r ./.laradock-multi/. ./laradock_new/
 
   cd ./laradock_new/
     docker-compose -f docker-compose.multi.yml build --pull > /dev/null

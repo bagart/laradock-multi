@@ -43,8 +43,8 @@ git clone https://github.com/bagart/laradock-multi.git
 cd laradock-multi
 ```
 
-### Autoconfigure and Auto-deploy
-You cal automate Configure, Upgrade and download `Laradock` with command
+### Install, Autoconfigure and Auto-deploy (local use also)
+You can automate Configure, Upgrade and download `Laradock` with command
 ```bash
 cmd/deploy.sh
 ```
@@ -73,9 +73,14 @@ mkdir projects/laravel/public
 echo '<?php phpinfo();' >> projects/laravel/public/index.php
 ```
 
-But you can install original laravel or your exist project
+Or install original laravel or your exist project
 ```bash
 composer create-project --prefer-dist laravel/laravel projects/laravel
+```
+
+Or just link to exist path
+```bash
+ln -s ../../../somename/ projects/somename
 ```
 
 #### Node.JS
